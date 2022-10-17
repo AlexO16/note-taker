@@ -8,7 +8,7 @@ let dbPath = path.join(__dirname, './db/db.json')
 let notes = JSON.parse(fs.readFileSync(dbPath)) || [];
 
 //Express app set up
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 //Access files in public folder
@@ -46,16 +46,27 @@ app.post('/api/notes', (req, res) => {
 
 //Delete note using unique ID and update db.json
 app.delete('/api/notes/:id', (req, res) => {
-    let id = req.params.id
-    let noteIndex = notes.findIndex((note) => note.id === id)
-    if (noteIndex === -1) {
-      res.sendStatus(404)  //If note is deleted from outside source on backend
-      return 
-    }
-    notes.splice(noteIndex,1)
-    fs.writeFileSync(dbPath, JSON.stringify(notes))
-    res.end()
-}) 
+  let id = req.params.id
+  let noteIndex = notes.findIndex((note) => note.id === id)
+  if (noteIndex === -1) {
+    res.sendStatus(404)  //If note is deleted from outside source on backend
+    return
+  }
+  notes.splice(noteIndex, 1)
+  fs.writeFileSync(dbPath, JSON.stringify(notes))
+  res.end()
+})
+
+app.put('/api/notes/:id', (req, res) => {
+  let id = req.params.id
+  let noteIndex = notes.findIndex((note) => note.id === id)
+  if (noteIndex === -1) {
+    res.sendStatus(404)  //If note is deleted from outside source on backend
+    return
+  }
+  notes[noteIndex] = req.body
+  fs.writeFileSync(dbPath, JSON.stringify(notes))
+})
 
 //Server set up
 app.listen(PORT, () =>
