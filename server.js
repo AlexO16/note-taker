@@ -8,7 +8,7 @@ let dbPath = path.join(__dirname, './db/db.json')
 let notes = JSON.parse(fs.readFileSync(dbPath)) || [];
 
 //Express app set up
-const PORT = process.env.port || 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 //Access files in public folder
